@@ -1,8 +1,6 @@
 from xlrd import open_workbook
 from Usecasemodel import UseCaseModel
-
 from SQLdatabase import MySQLUtils
-
 
 class Excel(object):
     def __init__(self, No, OMSUseCase, TotalUsecaseCount, UsecasePass, UsecaseFail, FalseTriggerTestcasesCount,
@@ -18,7 +16,6 @@ class Excel(object):
         self.TotalTestcase = TotalTestcase
         self.TotalPass = TotalPass
         self.TotalFail = TotalFail
-
     @property
     def __str__(self):
         return ("Excel object:\n"
@@ -43,11 +40,7 @@ class Excel(object):
                         self.TotalTestcase,
                         self.TotalPass,
                         self.TotalFail))
-
-
 wb = open_workbook("OMS_UseCase_GoldenVideosRegression_Testing_Report_Min_R9.3.4.0-M_15Nov_session2.xlsx")
-
-
 def getUCDetails(sheetref):
     sheetNames = wb.sheet_names()
     ctr = 0
@@ -55,8 +48,6 @@ def getUCDetails(sheetref):
         if shName == sheetref:
             return wb.sheets()[ctr]
         ctr = ctr + 1
-
-
 def excel_to_listoflist2(filename):
     sheet = wb.sheets()[1]
     rows = []
@@ -68,8 +59,6 @@ def excel_to_listoflist2(filename):
             if int(totalUseCaseCount) >= 0:
                 rows.append([no, omsUseCase, totalUseCaseCount])
     return rows
-
-
 def excel_to_listoflist(filename):
     wb = open_workbook(filename)
     sheet = wb.sheets()[1]
@@ -81,7 +70,6 @@ def excel_to_listoflist(filename):
         omsUseCase = sheet.cell(row, 2)
         totalUseCaseCount = sheet.cell(row, 3)
         validlines = []
-
         # If string is found in the rows, it should throw error for that i am using Exceptions
         try:
             totalUseCaseCount = float(totalUseCaseCount.value)
@@ -109,7 +97,6 @@ def excel_to_listoflist(filename):
         except (Exception) as e:
             if type(e) is float:
                 pass
-
     return validlines
 def getUseCaseMode(row,uscSheet):
     excelObject = UseCaseModel(
@@ -129,12 +116,11 @@ def getUseCaseMode(row,uscSheet):
         FalseTriggers=uscSheet.cell(row, 13).value,
         Result=uscSheet.cell(row, 14).value)
     return excelObject
-
 if __name__ == '__main__':
     object=[]
     excel_sheet = excel_to_listoflist2('OMS_UseCase_GoldenVideosRegression_Testing_Report_Min_R9.3.4.0-M_15Nov_session2.xlsx')
     namesOfWorkBook =[workbook for workbook in excel_sheet if workbook[2]>0]
-    names=[book[0]+"_"+book[1].replace(" ","_") for book in namesOfWorkBook]
+    names=[book[0]+"_"+book[1] for book in namesOfWorkBook]
     for name in names:
         sheet=getUCDetails(name)
         if sheet is not None:
@@ -144,35 +130,3 @@ if __name__ == '__main__':
     for row in object:
         utils.saveData(row)
 
-
-
-
-    #uscSheet = getUCDetails(line[0] + '_' + str(line[1]).replace(" ", "_"))
-    # listOfObject = []#
-    # for line in excel_sheet:
-    #     uscSheet = getUCDetails(line[0] + '_' + str(line[1]).replace(" ", "_"))
-    #     # uscSheet2=getUCDetails(l[1]+'_'+ str(l[2]).replace(" ","_"))
-    #     if uscSheet is not None:
-    #         rows = []
-    #         for row in range(2, (uscSheet.nrows-2)):
-    #             excelObject = getUseCaseMode(row)
-    #         #     excelObject = UseCaseModel(
-            #     TestCaseId=uscSheet.cell(row, 0).value,
-            #     Module=uscSheet.cell(row, 1).value,
-            #     CarId=uscSheet.cell(row, 2).value,
-            #     RecordingId=int(uscSheet.cell(row, 3).value),
-            #     Steeringwheel=uscSheet.cell(row, 4).value,
-            #     TripParts=uscSheet.cell(row, 5).value,
-            #     Interior=uscSheet.cell(row, 6).value,
-            #     TestPerformedby=uscSheet.cell(row, 7).value,
-            #     OccupiedSeats=uscSheet.cell(row, 8).value,
-            #     TestcaseDescription=uscSheet.cell(row, 9).value,
-            #     ObjectId=uscSheet.cell(row, 10).value,
-            #     Evaluation=uscSheet.cell(row, 11).value,
-            #     DATfile=uscSheet.cell(row, 12).value,
-            #     FalseTriggers=uscSheet.cell(row, 13).value,
-            #     Result=uscSheet.cell(row, 14).value
-    #         # )
-    #         listOfObject.append(excelObject)
-    # utils = MySQLUtils(user='root', password='Ilovmom@1', host='localhost', database='database1')
-    # utils.saveData(listOfObject)
